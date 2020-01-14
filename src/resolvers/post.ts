@@ -81,12 +81,16 @@ export default {
       if (!fetchedUser) {
         throw new Error("user not found")
       }
+
       const fetchedPost = await Post.findOne({ _id: id });
       if (!fetchedPost) {
         return "post not found"
       }
 
+      const postIndexInUser = fetchedUser.posts.findIndex(pId => pId.toString() == fetchedPost._id.toString());
       if (fetchedPost.username == fetchedUser.username) {
+        postIndexInUser > -1 && fetchedUser.posts.splice(postIndexInUser, 1); // delete postid from posts array in user
+        await fetchedUser.updateOne(fetchedUser);
         await Post.findOneAndDelete({ _id: id });
         return "Post successfully DELETED"
       } else {
@@ -123,7 +127,5 @@ export default {
       }
 
     }
-
-
   }
 };

@@ -22,7 +22,7 @@ async function assignToken(user: IUser) {
 
 export default {
   Query: {
-    users: async (_: any, args: any, context: IContext) => {
+    users: async (_: any, __: any, context: IContext) => {
       checkAuth(context)
       const fetchedUsers = await User.find({}).populate("posts"); // fetching all user from database
       return fetchedUsers;
@@ -48,7 +48,7 @@ export default {
 
   Mutation: {
     register: async (
-      parent: any,
+      _: any,
       { email, username, name, password }: IUserRegister
     ) => {
       const { isValid, errors } = signUpValidator(
@@ -117,7 +117,7 @@ export default {
       }
       checkAuth(context)
 
-      const fetchedUser = await User.findOne({ _id: id });
+      const fetchedUser = await User.findOneAndDelete({ _id: id });
       if (!fetchedUser) {
         throw new Error("User not found");
       }

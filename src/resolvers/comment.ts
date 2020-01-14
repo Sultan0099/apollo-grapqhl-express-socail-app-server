@@ -5,7 +5,6 @@ import { Post, User } from "../models";
 import { UserInputError, AuthenticationError } from "apollo-server-express";
 import { checkAuth } from "../utils/verification";
 import { IUserPayload } from "../interfaces/user";
-import user from "../typeDefs/user";
 
 export default {
 
@@ -95,7 +94,11 @@ export default {
         },
 
         // Update Comment Resolver 
-        updateComment: async (_: any, { postId, commentId, body }: { postId: string, commentId: string, body: string }, context: IContext) => {
+        updateComment: async (
+            _: any,
+            { postId, commentId, body }: { postId: string, commentId: string, body: string },
+            context: IContext
+        ) => {
             const userPayload: IUserPayload = checkAuth(context)
 
             if (!mongoose.Types.ObjectId.isValid(postId)) {

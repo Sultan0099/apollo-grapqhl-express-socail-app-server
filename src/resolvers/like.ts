@@ -5,7 +5,6 @@ import { IContext } from "../interfaces/appollo";
 import { Post, User } from "../models";
 import { checkAuth } from "../utils/verification";
 import { IUserPayload } from "../interfaces/user";
-import { AuthenticationError } from "apollo-server-express";
 
 export default {
 
