@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": " ts-node-dev  --transpileOnly  ./src/index.ts & SET NODE_ENV=development",
-    "start": "SET NODE_ENV=production & node ./dist/index.js"
+    "dev-server": " ts-node-dev  --transpileOnly  ./src/index.ts & SET NODE_ENV=development",
+    "start": "SET NODE_ENV=production & node ./dist/index.js",
+    "start-client": "npm start --prefix ../socio-web",
+    "dev": "concurrently \"npm run dev-server\"  \"npm run start-client\" "
   },
   "keywords": [],
   "author": "",
@@ -29,6 +31,7 @@
     "@types/jsonwebtoken": "^8.3.5",
     "@types/mongoose": "^5.5.38",
     "@types/node": "^13.1.4",
+    "concurrently": "^5.0.2",
     "ts-node": "^8.5.4",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.4"

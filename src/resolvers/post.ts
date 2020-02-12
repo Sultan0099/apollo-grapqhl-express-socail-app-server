@@ -53,7 +53,7 @@ export default {
       }
       const user = await User.findOne({ _id: userPayload["id"] });
       if (!user) {
-        throw new AuthenticationError("User not found on this id")
+        throw new Error("User not found on this id")
       }
 
       const newPost = new Post({
@@ -84,7 +84,7 @@ export default {
 
       const fetchedPost = await Post.findOne({ _id: id });
       if (!fetchedPost) {
-        return "post not found"
+        throw new Error("post not found");
       }
 
       const postIndexInUser = fetchedUser.posts.findIndex(pId => pId.toString() == fetchedPost._id.toString());

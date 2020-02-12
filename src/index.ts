@@ -11,7 +11,6 @@ import keys from "./config/key";
 
 import { IContext } from "./interfaces/appollo";
 
-
 // db
 mongoose
   .connect(keys.MONGO_URI || "", {
@@ -23,7 +22,7 @@ mongoose
   })
   .catch((err: Error) => console.log(err));
 
-// Apollo server 
+// Apollo server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -39,7 +38,5 @@ app.use(bodyParser.json());
 server.applyMiddleware({ app });
 
 app.listen(PORT, () =>
-  console.log(
-    `Server ready at http://localhost:${PORT}${server.graphqlPath}`
-  )
+  console.log(`Server ready at http://localhost:${PORT}${server.graphqlPath}`)
 );

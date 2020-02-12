@@ -6,12 +6,10 @@ import { IUser } from "../interfaces/user";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
-
   {
     username: {
       type: String,
-      required: true,
-
+      required: true
     },
     name: {
       type: String,
@@ -35,19 +33,17 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.path('username').validate(async function (username: string) {
-  console.log("validates runs", username)
-  return await User.countDocuments({ username }) === 0
+userSchema.path("username").validate(async function(username: string) {
+  console.log("validates runs", username);
+  return (await User.countDocuments({ username })) === 0;
 }, "username already taken");
 
-userSchema.path('email').validate(async function (email: string) {
-  console.log("validates runs", email)
-  return await User.countDocuments({ email }) === 0
+userSchema.path("email").validate(async function(email: string) {
+  console.log("validates runs", email);
+  return (await User.countDocuments({ email })) === 0;
 }, "This email already register");
 
-
-
-userSchema.pre<IUser>("save", async function (next) {
+userSchema.pre<IUser>("save", async function(next) {
   try {
     const user = this;
     const salt = await bcrypt.genSalt(10);
@@ -61,7 +57,9 @@ userSchema.pre<IUser>("save", async function (next) {
   }
 });
 
-userSchema.methods.isValidPassword = async function (newPassword: string): Promise<boolean> {
+userSchema.methods.isValidPassword = async function(
+  newPassword: string
+): Promise<boolean> {
   try {
     return await bcrypt.compare(newPassword, this.password);
   } catch (err) {
