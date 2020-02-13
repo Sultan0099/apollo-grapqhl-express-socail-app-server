@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export default gql`
   extend type Query {
-    me : User!
+    me: User!
     user(id: ID!): User
     users: [User!]!
   }
@@ -17,15 +17,13 @@ export default gql`
     deleteUser(id: ID!): String!
   }
 
-  
-
   type User {
     id: ID!
     email: String!
     username: String!
     name: String!
     createdAt: String!
-    token : String
-    posts : [Post]
+    token: String
+    posts: [Post]
   }
 `;
