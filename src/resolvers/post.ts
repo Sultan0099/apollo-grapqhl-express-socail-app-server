@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
-import {
-  UserInputError,
-  AuthenticationError,
-  addErrorLoggingToSchema
-} from "apollo-server-express";
+import { UserInputError, AuthenticationError } from "apollo-server-express";
 import { IContext } from "../interfaces/appollo";
 import { checkAuth } from "../utils/verification";
 
@@ -13,15 +9,18 @@ import { postValidator } from "../utils/validation";
 
 export default {
   Query: {
+    // SECTION fetch multiple posts
     posts: async (_: any, __: any, context: IContext) => {
       checkAuth(context);
       try {
         const fetchedPost = await Post.find({})
           .populate("user")
           .sort({ createdAt: -1 });
+
         if (!fetchedPost) {
           throw new Error("posts not found");
         }
+
         const posts = [...fetchedPost];
 
         return posts;
@@ -29,6 +28,7 @@ export default {
         throw new Error(error);
       }
     },
+    //  SECTION  fetch single post
     post: async (_: any, { id }: { id: string }, context: IContext) => {
       if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new UserInputError(`${id} is not valid id`);
@@ -44,9 +44,42 @@ export default {
       } catch (err) {
         throw new Error("Error in server");
       }
+    },
+    // SECTION Paginated Post
+    paginatedPost: async (
+      _: any,
+      { page, postLength }: { page: number; postLength: number },
+      context: IContext
+    ) => {
+      checkAuth(context);
+      try {
+        let hasMore: boolean = true;
+
+        await Post.countDocuments((_, count) => {
+          hasMore = page < Math.ceil(count / postLength);
+        });
+
+        const fetchedPost = await Post.find({})
+          .populate("user")
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * postLength)
+          .limit(postLength);
+
+        if (!fetchedPost) {
+          throw new Error("Posts are not available");
+        }
+
+        return {
+          posts: [...fetchedPost],
+          hasMore
+        };
+      } catch (error) {
+        throw new Error("Error in server");
+      }
     }
   },
   Mutation: {
+    // SECTION  create post
     createPost: async (
       _: any,
       { body }: { body: string },
@@ -77,6 +110,7 @@ export default {
         user: { ...user._doc, id: user._id }
       };
     },
+    // SECTION Delete Post resolver
     deletePost: async (_: any, { id }: { id: string }, context: IContext) => {
       const userPayload: IUserPayload = checkAuth(context);
 
@@ -106,6 +140,7 @@ export default {
         throw new AuthenticationError("you cannot delete that post");
       }
     },
+    // SECTION  update post
     updatePost: async (
       _: any,
       { id, body }: { id: string; body: string },
