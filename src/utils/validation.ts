@@ -74,13 +74,13 @@ export const singInValidator = (email: string, password: string) => {
 };
 
 export const postValidator = (body: string) => {
-  let errors: IPostValidation = {}
-  if (body.length < 5 || body.length > 150) {
-    errors.body = "Post should consist 5 to 150 character";
+  let errors: IPostValidation = {};
+  if (body.length < 5 || body.length > 500) {
+    errors.body = "Post should consist 5 to 500 character";
   }
 
   return {
     errors,
     isValid: Object.keys(errors).length < 1
-  }
-}
+  };
+};
