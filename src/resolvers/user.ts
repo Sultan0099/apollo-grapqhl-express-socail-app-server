@@ -39,14 +39,11 @@ export default {
         throw new UserInputError(`${id} is not a valid id`);
       }
       checkAuth(context);
-      const fetchedUser = await User.findOne({ _id: id }).populate("posts"); // fetching specific user from database
+      const fetchedUser = await User.findOne({ _id: id });  // fetching specific user from database
       if (!fetchedUser) {
         throw new AuthenticationError("user not found");
       }
-      const fetchedPosts = await Post.find({ user: fetchedUser._id }).populate(
-        "user"
-      );
-      console.log(fetchedPosts);
+      const fetchedPosts = await Post.find({ user: fetchedUser._id }).populate('user').sort({ createdAt: -1 });
       if (fetchedPosts.length >= 1) {
         fetchedUser.posts = [...fetchedPosts];
       }
